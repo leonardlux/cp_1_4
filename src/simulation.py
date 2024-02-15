@@ -82,12 +82,19 @@ class Simulation:
             self.U_analy[i_t] = self.func_u_0(x_dash)
         pass
 
-    def plot(self,):
+    def plot(self,save_to=""):
 
         fig  =  plt.figure(figsize = (12, 5))
         ax  = fig.add_subplot(projection = '3d')
         X, T = np.meshgrid( self.x, self.t)  
         ax.plot_surface(T, X, self.U[:, self.bc:-self.bc])
+        ax.set_xlabel("$t$")
+        ax.set_ylabel("$x$")
+        ax.set_zlabel("$u(x)$")
+        if save_to!="":
+            plt.savefig(save_to)
+        else:
+            plt.show()
 
         pass
     

@@ -16,9 +16,6 @@ def definition_interval_wrapper(config,func):
 def initial_sin(X):
     return np.sin(np.pi*X)
 
-def initial_uniform(X):
-    return np.ones(len(X))
-
 def initial_spike(X):
     x = np.zeros(len(X))
     x[int(len(X)/2)] = 1

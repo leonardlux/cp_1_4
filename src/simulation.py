@@ -26,7 +26,6 @@ class Simulation:
         # populate the array with the starting values 
         self.U[ 0, bc:-bc ] = self.func_u_0(self.x)
 
-
         pass
         
     def run(self):
@@ -50,7 +49,7 @@ class Simulation:
     def run_hopf(self):
         # as in task 3, we can use an iterative approach:
         # constants needed:
-        alpha = self.c.dt / ( 4 * self.c.dx )
+        alpha = self.c.dt / self.c.dx 
         bc = self.bc # border cells per side
 
         for i_t in range(self.c.n_t - 1):
@@ -61,8 +60,8 @@ class Simulation:
             # calculation
             self.U[ i_t + 1 , bc:-bc ] = \
                 + U_i \
-                - alpha    * ( U_p**2 - U_m**2 ) \
-                + alpha**2 * (
+                - alpha /4   * ( U_p**2 - U_m**2 ) \
+                + alpha**2 / 8 * (
                     + ( U_p + U_i ) * ( U_p**2 - U_i**2 )
                     - ( U_i + U_m ) * ( U_i**2 - U_m**2 )
                 )
@@ -98,6 +97,37 @@ class Simulation:
 
         pass
     
+    def plot_diff_time(self,z_lim=1.1, times = [],save_to = ""):
+        fig  =  plt.figure(figsize = (12, 5))
+        ax0  = fig.add_subplot(131,)
+        ax1  = fig.add_subplot(132,)
+        ax2  = fig.add_subplot(133,)
+
+        axs = [ ax0, ax1, ax2 ]
+        if times == []:
+            times = [
+                0,              # start point
+                int(self.c.n_t/2),   # half way through
+                self.c.n_t -1,          # end of simulation
+            ]
+        # adjust for offset
+
+        # plot everything
+        for ax, t_i in zip(axs,times):
+            ax.set_title(f"t = {self.c.dt*(t_i)}")
+            ax.plot( 
+                self.x, 
+                self.U[ t_i, self.bc:-self.bc],
+                )
+            ax.set_xlim(0.3,0.7)
+            ax.set_xlabel("$x$")
+            ax.set_ylabel("$u(x)$")
+
+        if save_to =="":
+            plt.show()
+        else:
+            plt.savefig(save_to)
+
     def plot_interactive(self,t_i_steps=100,diff=False):
         def plotter(t):
             t = int(t)
